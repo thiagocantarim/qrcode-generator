@@ -405,13 +405,13 @@
 <header class="sticky top-0 z-50 h-[58px] px-7 flex items-center gap-3 panel-border-b header-bg backdrop-blur-md" style="backdrop-filter:blur(14px)">
 
   <!-- Logo mark: colored square with QR text -->
-  <div class="w-[38px] h-[38px] rounded-[10px] bg-accent grid place-items-center flex-shrink-0">
+  <!-- <div class="w-[38px] h-[38px] rounded-[10px] bg-accent grid place-items-center flex-shrink-0">
     <span class="text-white font-head font-extrabold text-[13px] tracking-tighter leading-none">QR</span>
-  </div>
+  </div> -->
 
   <!-- Logo text -->
   <div class="font-head font-extrabold text-[20px] tracking-tight text-primary">
-    <span class="text-accent">Studio</span>
+    QR <span class="text-accent">Studio</span>
   </div>
 
   <!-- Theme switcher -->
@@ -771,10 +771,9 @@
     </div>
 
     <!-- Download buttons -->
-    <div class="grid grid-cols-2 gap-2" id="dl-buttons" style="display:none">
+    <div class="grid grid-cols-3 gap-2" id="dl-buttons" style="display:none">
       <button class="btn-dl" onclick="downloadPNG()">⬇ PNG</button>
       <button class="btn-dl" onclick="downloadSVG()">⬇ SVG</button>
-      <button class="btn-dl" onclick="downloadPDF()">⬇ PDF</button>
       <button class="btn-dl" onclick="printQR()">🖨 Imprimir</button>
     </div>
 
@@ -985,14 +984,6 @@ function triggerDL(canvas,name){ const a=document.createElement('a'); a.download
 
 /* ── DOWNLOAD SVG ── */
 function downloadSVG(){
-  const canvas=document.querySelector('#qr-output canvas'); if(!canvas){showToast('⚠ Gere o QR primeiro');return;}
-  const sz=canvas.width,lt=document.getElementById('color-light').value;
-  const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${sz}" height="${sz}"><rect width="${sz}" height="${sz}" fill="${lt}"/><image href="${canvas.toDataURL('image/png')}" width="${sz}" height="${sz}"/></svg>`;
-  const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'})); a.download='qrcode.svg'; a.click(); showToast('⬇ SVG exportado!');
-}
-
-/* ── DOWNLOAD PDF ── */
-function downloadPDF(){
   setTimeout(()=>{
     const canvas=document.querySelector('#qr-output canvas'); if(!canvas){showToast('⚠ Gere o QR primeiro');return;}
     const size=parseInt(document.getElementById('qr-size').value);
@@ -1000,52 +991,21 @@ function downloadPDF(){
     const capSz=parseInt(document.getElementById('caption-size').value||16);
     const extraH=capTxt?capSz*2+24:0;
 
+    // Build the same composite canvas as PNG export
     const co=document.createElement('canvas'); co.width=size; co.height=size+extraH;
     const ctx=co.getContext('2d');
     ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,co.width,co.height);
     ctx.drawImage(canvas,0,0,size,size);
 
-    function doExport(){
+    function finish(){
       if(capTxt) drawCap(ctx,capTxt,size,size,capSz);
-      const dataUrl=co.toDataURL('image/jpeg',1.0);
-      const capFont=document.getElementById('caption-font').value;
-      const capColor=document.getElementById('caption-color').value;
-      const capSpacing=document.getElementById('caption-spacing').value;
-
-      // Open a new window with the QR rendered for PDF saving
-      const win=window.open('','_blank','width=640,height=760');
-      win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-        <title>QR Code</title>
-        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap" rel="stylesheet">
-        <style>
-          *{margin:0;padding:0;box-sizing:border-box;}
-          html,body{width:100%;height:100%;background:#fff;}
-          body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;gap:16px;}
-          img{display:block;max-width:100%;height:auto;border-radius:8px;}
-          .cap{font-family:${capFont};color:${capColor};font-size:${capSz}px;font-weight:${S.capW};font-style:${S.capSt};text-align:${S.capAl};letter-spacing:${capSpacing}px;max-width:${size}px;word-break:break-word;line-height:1.5;}
-          @media print{
-            body{padding:24px;}
-            @page{size:auto;margin:16mm;}
-          }
-          .actions{display:flex;gap:10px;margin-top:20px;}
-          .btn{padding:10px 22px;border-radius:8px;border:none;cursor:pointer;font-size:13px;font-family:'Syne',sans-serif;font-weight:700;}
-          .btn-pdf{background:#5548e8;color:#fff;}
-          .btn-close{background:#f0f0f4;color:#18181c;}
-          .btn-pdf:hover{filter:brightness(1.1);}
-          .btn-close:hover{background:#e4e4ea;}
-          .hint{font-size:11px;color:#9898b0;margin-top:8px;text-align:center;}
-        </style>
-      </head><body>
-        <img src="${dataUrl}" width="${size}" height="${size+extraH}" />
-        ${capTxt?`<div class="cap">${capTxt}</div>`:''}
-        <div class="actions">
-          <button class="btn btn-pdf" onclick="window.print()">⬇ Salvar como PDF</button>
-          <button class="btn btn-close" onclick="window.close()">Fechar</button>
-        </div>
-        <p class="hint">Na janela de impressão, selecione "Salvar como PDF" como destino.</p>
-      </body></html>`);
-      win.document.close();
-      showToast('📄 Janela PDF aberta!');
+      const dataUrl=co.toDataURL('image/png');
+      const totalH=size+extraH;
+      const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${totalH}"><image href="${dataUrl}" width="${size}" height="${totalH}"/></svg>`;
+      const a=document.createElement('a');
+      a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
+      a.download='qrcode.svg'; a.click();
+      showToast('⬇ SVG exportado!');
     }
 
     if(S.logoOn&&S.logoSrc){
@@ -1055,9 +1015,9 @@ function downloadPDF(){
         const cx=(size-lsz-pad*2)/2,cy=(size-lsz-pad*2)/2,bw=lsz+pad*2;
         const brM={square:0,rounded:14,circle:bw/2};
         ctx.fillStyle='#ffffff'; rRect(ctx,cx,cy,bw,bw,brM[S.logoBorder]); ctx.fill();
-        ctx.drawImage(img,cx+pad,cy+pad,lsz,lsz); doExport();
+        ctx.drawImage(img,cx+pad,cy+pad,lsz,lsz); finish();
       }; img.src=S.logoSrc;
-    } else { doExport(); }
+    } else { finish(); }
   },150);
 }
 
