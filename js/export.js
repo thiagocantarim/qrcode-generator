@@ -38,8 +38,18 @@ function buildCompositeCanvas(callback) {
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, totalW, totalH);
 
-  // QR deslocado pela margem branca
-  ctx.drawImage(qrCanvas, QR_PAD, QR_PAD, size, size);
+  // Aplica moldura ao QR via clip path
+  const qrBorderRadius = { square: 0, rounded: 18, circle: size / 2 };
+  const qrR = qrBorderRadius[S.qrBorder] || 0;
+  if (qrR > 0) {
+    ctx.save();
+    _roundedRect(ctx, QR_PAD, QR_PAD, size, size, Math.min(qrR, size / 2));
+    ctx.clip();
+    ctx.drawImage(qrCanvas, QR_PAD, QR_PAD, size, size);
+    ctx.restore();
+  } else {
+    ctx.drawImage(qrCanvas, QR_PAD, QR_PAD, size, size);
+  }
 
   function finish() {
     if (capTxt) _drawCaption(ctx, capTxt, totalW, size + QR_PAD * 2, capSz);

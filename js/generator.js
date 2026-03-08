@@ -40,8 +40,9 @@ function generateQR() {
     quietZoneColor: lt,
   });
 
-  // Atualiza overlay da logo
+  // Atualiza overlay da logo e moldura do QR
   _updateLogoOverlay(size);
+  _updateQRBorder();
 
   // Exibe o resultado
   document.getElementById('empty-state').classList.add('hidden');
@@ -54,14 +55,20 @@ function generateQR() {
   showToast('✓ QR Code gerado com sucesso!');
 }
 
-/** Atualiza o overlay de logo no preview (não no export) */
+/** Aplica o border-radius da moldura ao wrapper do QR no preview */
+function _updateQRBorder() {
+  const qrOut = document.getElementById('qr-output');
+  const radMap = { square: '0px', rounded: '18px', circle: '50%' };
+  qrOut.style.borderRadius = radMap[S.qrBorder] || '0px';
+  qrOut.style.overflow = 'hidden';
+}
 function _updateLogoOverlay(size) {
   const overlay = document.getElementById('logo-overlay');
   if (S.logoOn && S.logoSrc) {
     const pct = parseInt(document.getElementById('logo-size').value) / 100;
     const pad = parseInt(document.getElementById('logo-pad').value);
     const lsz = Math.round(size * pct);
-    const borderMap = { square: '8px', rounded: '18px', circle: '50%' };
+    const borderMap = { square: '0px', rounded: '18px', circle: '50%' };
 
     overlay.classList.remove('hidden');
     overlay.style.cssText =

@@ -51,7 +51,19 @@ function setEC(level) {
   );
 }
 
-// ── Logo ──────────────────────────────────────────────────────────────────────
+// ── Moldura do QR ─────────────────────────────────────────────────────────────
+
+function setQRBorder(type) {
+  S.qrBorder = type;
+  ['square', 'rounded', 'circle'].forEach(x =>
+    document.getElementById('qrb-' + x).classList.toggle('active', x === type)
+  );
+  // Atualiza preview imediatamente se já há QR gerado
+  const canvas = document.querySelector('#qr-output canvas');
+  if (canvas) _updateQRBorder();
+}
+
+// ── Moldura da logo ───────────────────────────────────────────────────────────
 
 function toggleLogo() {
   S.logoOn = !S.logoOn;

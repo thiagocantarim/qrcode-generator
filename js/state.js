@@ -8,6 +8,7 @@
 const S = {
   type:       'url',     // 'url' | 'text' | 'contact' | 'wifi'
   ec:         'Q',       // 'L' | 'M' | 'Q' | 'H'
+  qrBorder:   'square',  // 'square' | 'rounded' | 'circle'
   logoOn:     false,
   logoSrc:    null,      // base64 da imagem carregada
   logoBorder: 'square',  // 'square' | 'rounded' | 'circle'

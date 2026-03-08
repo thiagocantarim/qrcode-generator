@@ -209,6 +209,17 @@
           <div class="flex flex-wrap gap-[6px] mt-1" id="palette-grid"></div>
         </div>
 
+        <div class="sec-div"><span>Moldura</span></div>
+
+        <div class="mb-4">
+          <label class="block text-[10px] tracking-[1.2px] uppercase text-muted mb-[6px] font-medium">Formato da moldura do QR</label>
+          <div class="flex flex-wrap gap-[5px]">
+            <button class="tbtn active" id="qrb-square"  onclick="setQRBorder('square')">Quadrado</button>
+            <button class="tbtn"        id="qrb-rounded" onclick="setQRBorder('rounded')">Arredondado</button>
+            <button class="tbtn"        id="qrb-circle"  onclick="setQRBorder('circle')">Círculo</button>
+          </div>
+        </div>
+
         <div class="sec-div"><span>Correção de erro</span></div>
 
         <div>
@@ -371,7 +382,7 @@
       </div>
     </div>
 
-    <button class="btn-generate" onclick="generateQR()">GERAR QR CODE</button>
+    <button class="btn-generate" onclick="generateQR()">▦ &nbsp;GERAR QR CODE</button>
   </div>
 
   <!-- ── COLUNA DIREITA ── -->
