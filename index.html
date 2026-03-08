@@ -4,11 +4,16 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>QR Studio — Gerador de QR Code</title>
+
+<!-- Bibliotecas externas -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.tailwindcss.com"></script>
+
+<!-- Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=Playfair+Display:wght@400;700&family=Bebas+Neue&family=Dancing+Script:wght@400;700&family=Montserrat:wght@300;400;600;700&family=Raleway:wght@300;400;700&family=Press+Start+2P&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&display=swap" rel="stylesheet">
 
+<!-- Tailwind config — extensão de fontes -->
 <script>
   tailwind.config = {
     theme: {
@@ -22,392 +27,16 @@
   }
 </script>
 
-<style>
-  /* ── CSS custom properties per theme – Tailwind handles layout, these handle colors ── */
-
-  [data-theme="dark"] {
-    --bg:          #111114;
-    --surface:     #1a1a1f;
-    --surface2:    #222228;
-    --surface3:    #2c2c34;
-    --border:      rgba(255,255,255,0.08);
-    --border2:     rgba(255,255,255,0.04);
-    --accent:      #7c6dfa;
-    --accent-bg:   rgba(124,109,250,0.12);
-    --accent-ring: rgba(124,109,250,0.22);
-    --text:        #ededf2;
-    --text2:       #9898b0;
-    --muted:       #55556a;
-    --shadow:      rgba(0,0,0,0.55);
-    --header-bg:   rgba(17,17,20,0.9);
-    color-scheme: dark;
-  }
-
-  [data-theme="light"] {
-    --bg:          #f3f3f6;
-    --surface:     #ffffff;
-    --surface2:    #ededf2;
-    --surface3:    #e4e4ea;
-    --border:      rgba(0,0,0,0.09);
-    --border2:     rgba(0,0,0,0.05);
-    --accent:      #5548e8;
-    --accent-bg:   rgba(85,72,232,0.08);
-    --accent-ring: rgba(85,72,232,0.18);
-    --text:        #18181c;
-    --text2:       #50506a;
-    --muted:       #9898b0;
-    --shadow:      rgba(0,0,0,0.10);
-    --header-bg:   rgba(243,243,246,0.9);
-    color-scheme: light;
-  }
-
-  [data-theme="system"] {
-    --bg:          #f3f3f6;
-    --surface:     #ffffff;
-    --surface2:    #ededf2;
-    --surface3:    #e4e4ea;
-    --border:      rgba(0,0,0,0.09);
-    --border2:     rgba(0,0,0,0.05);
-    --accent:      #5548e8;
-    --accent-bg:   rgba(85,72,232,0.08);
-    --accent-ring: rgba(85,72,232,0.18);
-    --text:        #18181c;
-    --text2:       #50506a;
-    --muted:       #9898b0;
-    --shadow:      rgba(0,0,0,0.10);
-    --header-bg:   rgba(243,243,246,0.9);
-    color-scheme: light;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    [data-theme="system"] {
-      --bg:          #111114;
-      --surface:     #1a1a1f;
-      --surface2:    #222228;
-      --surface3:    #2c2c34;
-      --border:      rgba(255,255,255,0.08);
-      --border2:     rgba(255,255,255,0.04);
-      --accent:      #7c6dfa;
-      --accent-bg:   rgba(124,109,250,0.12);
-      --accent-ring: rgba(124,109,250,0.22);
-      --text:        #ededf2;
-      --text2:       #9898b0;
-      --muted:       #55556a;
-      --shadow:      rgba(0,0,0,0.55);
-      --header-bg:   rgba(17,17,20,0.9);
-      color-scheme: dark;
-    }
-  }
-
-  /* Base */
-  *, *::before, *::after { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-
-  body {
-    background-color: var(--bg);
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    transition: background-color 0.22s, color 0.22s;
-  }
-
-  /* Semantic color helpers used throughout */
-  .bg-page    { background-color: var(--bg); }
-  .bg-surface { background-color: var(--surface); }
-  .bg-surface2{ background-color: var(--surface2); }
-  .bg-surface3{ background-color: var(--surface3); }
-  .bg-accent  { background-color: var(--accent); }
-  .bg-accent-s{ background-color: var(--accent-bg); }
-
-  .text-primary { color: var(--text); }
-  .text-secondary{ color: var(--text2); }
-  .text-muted   { color: var(--muted); }
-  .text-accent  { color: var(--accent); }
-
-  .border-theme  { border-color: var(--border); }
-  .border-theme2 { border-color: var(--border2); }
-  .border-accent { border-color: var(--accent); }
-
-  .header-bg { background-color: var(--header-bg); }
-
-  /* Focus ring using accent */
-  .focus-accent:focus {
-    outline: none;
-    border-color: var(--accent) !important;
-    box-shadow: 0 0 0 3px var(--accent-ring);
-  }
-
-  /* Input / Select / Textarea base */
-  .input-base {
-    width: 100%;
-    background-color: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    padding: 10px 13px;
-    color: var(--text);
-    font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    outline: none;
-    transition: border-color 0.16s, box-shadow 0.16s, background-color 0.22s;
-    -webkit-appearance: none;
-  }
-  .input-base:focus {
-    border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-ring);
-    background-color: var(--surface);
-  }
-  select.input-base option { background-color: var(--surface2); color: var(--text); }
-  textarea.input-base { resize: vertical; min-height: 88px; }
-
-  /* Toggle button */
-  .tbtn {
-    padding: 6px 12px;
-    border-radius: 7px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--text2);
-    font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    cursor: pointer;
-    transition: all 0.16s;
-    white-space: nowrap;
-  }
-  .tbtn:hover { border-color: var(--accent); color: var(--text); background-color: var(--accent-bg); }
-  .tbtn.active { background-color: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
-
-  /* Tab */
-  .tab-btn {
-    flex: 1;
-    min-width: 68px;
-    padding: 7px 9px;
-    border: none;
-    background: transparent;
-    color: var(--muted);
-    font-family: 'DM Mono', monospace;
-    font-size: 12px;
-    cursor: pointer;
-    border-radius: 6px;
-    transition: all 0.16s;
-    white-space: nowrap;
-  }
-  .tab-btn:hover { color: var(--text); }
-  .tab-btn.active {
-    background-color: var(--surface);
-    color: var(--text);
-    box-shadow: 0 1px 4px var(--shadow);
-  }
-
-  /* Theme switcher button */
-  .theme-btn {
-    display: flex; align-items: center; gap: 5px;
-    padding: 5px 11px;
-    border-radius: 7px; border: none;
-    background: transparent; color: var(--muted);
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    cursor: pointer; transition: all 0.16s; white-space: nowrap;
-  }
-  .theme-btn:hover { color: var(--text); background-color: var(--surface3); }
-  .theme-btn.active {
-    background-color: var(--surface);
-    color: var(--text);
-    box-shadow: 0 1px 5px var(--shadow);
-  }
-
-  /* Switch toggle */
-  .sw {
-    width: 42px; height: 23px;
-    background-color: var(--surface3);
-    border-radius: 100px;
-    border: 1px solid var(--border);
-    position: relative; cursor: pointer;
-    transition: background-color 0.2s, border-color 0.2s;
-    flex-shrink: 0;
-  }
-  .sw.on { background-color: var(--accent); border-color: var(--accent); }
-  .sw::after {
-    content: ''; position: absolute;
-    width: 17px; height: 17px;
-    background: #fff; border-radius: 50%;
-    top: 2px; left: 2px;
-    transition: transform 0.2s;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.25);
-  }
-  .sw.on::after { transform: translateX(19px); }
-
-  /* Range input */
-  input[type="range"] {
-    flex: 1; padding: 0; height: 4px;
-    background-color: var(--surface3);
-    border-radius: 100px; border: none;
-    -webkit-appearance: none; cursor: pointer;
-    outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%; background-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-ring); cursor: pointer;
-  }
-
-  /* Color swatch */
-  .color-swatch {
-    width: 40px; height: 40px;
-    border-radius: 9px; border: 1px solid var(--border);
-    overflow: hidden; cursor: pointer; flex-shrink: 0;
-  }
-  .color-swatch input[type="color"] {
-    width: 200%; height: 200%;
-    border: none; padding: 0; margin: -25%;
-    cursor: pointer; border-radius: 0;
-  }
-
-  /* Upload zone */
-  .upload-zone {
-    border: 2px dashed var(--border);
-    border-radius: 10px; padding: 18px;
-    text-align: center; cursor: pointer;
-    transition: all 0.16s; position: relative;
-  }
-  .upload-zone:hover { border-color: var(--accent); background-color: var(--accent-bg); }
-  .upload-zone input {
-    position: absolute; inset: 0; opacity: 0; cursor: pointer;
-    width: 100%; height: 100%; border: none; background: transparent; padding: 0;
-  }
-
-  /* Palette swatch */
-  .pal-sw {
-    width: 30px; height: 30px; border-radius: 7px;
-    border: 2px solid transparent; cursor: pointer;
-    transition: transform 0.14s, border-color 0.14s;
-    display: flex; overflow: hidden; flex-shrink: 0;
-  }
-  .pal-sw:hover { transform: scale(1.12); }
-  .pal-sw.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-ring); }
-  .pal-sw .ps-d, .pal-sw .ps-l { flex: 1; height: 100%; }
-
-  /* Chip */
-  .chip {
-    display: inline-flex; align-items: center; gap: 5px;
-    padding: 3px 9px 3px 5px;
-    background-color: var(--accent-bg);
-    border: 1px solid rgba(124,109,250,0.18);
-    border-radius: 100px; font-size: 10px; color: var(--accent);
-    margin-bottom: 13px; letter-spacing: 0.4px;
-  }
-  .chip-dot {
-    width: 5px; height: 5px; background-color: var(--accent);
-    border-radius: 50%; animation: blink 1.8s infinite;
-  }
-  @keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
-
-  /* Font preview bar */
-  .font-preview-bar {
-    background-color: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 9px; padding: 12px 14px; margin-top: 7px;
-    font-size: 17px; text-align: center;
-    min-height: 46px; display: flex; align-items: center;
-    justify-content: center; transition: all 0.3s;
-  }
-
-  /* Section divider */
-  .sec-div {
-    display: flex; align-items: center; gap: 10px;
-    margin: 18px 0 14px;
-  }
-  .sec-div::before, .sec-div::after {
-    content: ''; flex: 1; height: 1px; background-color: var(--border);
-  }
-  .sec-div span {
-    font-size: 9px; letter-spacing: 1.5px;
-    text-transform: uppercase; color: var(--muted); white-space: nowrap;
-  }
-
-  /* QR logo overlay */
-  .qr-logo-overlay {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    overflow: hidden; background: #fff;
-    display: flex; align-items: center; justify-content: center;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.28); pointer-events: none;
-  }
-  .qr-logo-overlay img { width: 100%; height: 100%; object-fit: contain; }
-
-  /* Toast */
-  #toast {
-    position: fixed; bottom: 22px; left: 50%;
-    transform: translateX(-50%) translateY(72px);
-    background-color: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text); padding: 9px 22px;
-    border-radius: 100px; font-size: 12px; z-index: 9999;
-    transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
-    box-shadow: 0 8px 28px var(--shadow); white-space: nowrap;
-  }
-  #toast.show { transform: translateX(-50%) translateY(0); }
-
-  /* Code tag */
-  code {
-    font-family: 'DM Mono', monospace; font-size: 11px;
-    background-color: var(--surface2); padding: 1px 5px;
-    border-radius: 4px; color: var(--accent);
-    border: 1px solid var(--border);
-  }
-
-  /* Scrollbar */
-  ::-webkit-scrollbar { width: 5px; }
-  ::-webkit-scrollbar-track { background-color: var(--bg); }
-  ::-webkit-scrollbar-thumb { background-color: var(--surface3); border-radius: 100px; }
-
-  .hidden { display: none !important; }
-
-  /* Panel border uses CSS var */
-  .panel-border { border: 1px solid var(--border); }
-  .panel-border-b { border-bottom: 1px solid var(--border); }
-  .panel-border-b2 { border-bottom: 1px solid var(--border2); }
-
-  /* Generate button */
-  .btn-generate {
-    width: 100%; padding: 13px;
-    background-color: var(--accent); border: none;
-    border-radius: 11px; color: #fff;
-    font-family: 'Syne', sans-serif; font-weight: 700;
-    font-size: 14px; letter-spacing: 0.7px;
-    cursor: pointer; transition: all 0.16s; margin-top: 8px;
-  }
-  .btn-generate:hover {
-    filter: brightness(1.1); transform: translateY(-1px);
-    box-shadow: 0 8px 20px var(--accent-ring);
-  }
-  .btn-generate:active { transform: translateY(0); filter: brightness(0.95); }
-
-  /* Download button */
-  .btn-dl {
-    padding: 10px; border-radius: 9px;
-    border: 1px solid var(--border);
-    background-color: var(--surface2); color: var(--text2);
-    font-family: 'DM Mono', monospace; font-size: 12px;
-    cursor: pointer; transition: all 0.16s;
-    display: flex; align-items: center; justify-content: center; gap: 5px;
-  }
-  .btn-dl:hover {
-    border-color: var(--accent); color: var(--accent);
-    background-color: var(--accent-bg);
-  }
-
-  @media (max-width: 640px) {
-    .theme-btn span { display: none; }
-  }
-</style>
+<!-- Estilos da aplicação -->
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/components.css">
 </head>
 <body class="min-h-screen overflow-x-hidden">
 
-<!-- ═══ HEADER ═══ -->
+<!-- ═══════════════════════════════════════
+     HEADER
+═══════════════════════════════════════ -->
 <header class="sticky top-0 z-50 h-[58px] px-7 flex items-center gap-3 panel-border-b header-bg backdrop-blur-md" style="backdrop-filter:blur(14px)">
-
-  <!-- Logo mark: colored square with QR text -->
-  <!-- <div class="w-[38px] h-[38px] rounded-[10px] bg-accent grid place-items-center flex-shrink-0">
-    <span class="text-white font-head font-extrabold text-[13px] tracking-tighter leading-none">QR</span>
-  </div> -->
 
   <!-- Logo text -->
   <div class="font-head font-extrabold text-[20px] tracking-tight text-primary">
@@ -416,31 +45,29 @@
 
   <!-- Theme switcher -->
   <div class="ml-auto flex items-center gap-[3px] bg-surface2 panel-border rounded-[10px] p-[3px]">
-    <button class="theme-btn" id="tbtn-light" onclick="setTheme('light')">
-      <span>☀️</span><span>Claro</span>
-    </button>
-    <button class="theme-btn" id="tbtn-dark" onclick="setTheme('dark')">
-      <span>🌙</span><span>Escuro</span>
-    </button>
-    <button class="theme-btn active" id="tbtn-system" onclick="setTheme('system')">
-      <span>💻</span><span>Sistema</span>
-    </button>
+    <button class="theme-btn" id="tbtn-light"  onclick="setTheme('light')"><span>☀️</span><span>Claro</span></button>
+    <button class="theme-btn" id="tbtn-dark"   onclick="setTheme('dark')"><span>🌙</span><span>Escuro</span></button>
+    <button class="theme-btn active" id="tbtn-system" onclick="setTheme('system')"><span>💻</span><span>Sistema</span></button>
   </div>
 </header>
 
-<!-- ═══ MAIN ═══ -->
+<!-- ═══════════════════════════════════════
+     MAIN — grid de 2 colunas (lg)
+═══════════════════════════════════════ -->
 <main class="max-w-[1260px] mx-auto px-5 pt-8 pb-20 grid grid-cols-1 lg:grid-cols-[1fr_390px] gap-6 items-start">
 
-  <!-- ── LEFT COLUMN ── -->
+  <!-- ── COLUNA ESQUERDA ── -->
   <div class="flex flex-col gap-[18px]">
 
-    <!-- CONTENT PANEL -->
+    <!-- PAINEL: Conteúdo -->
     <div class="bg-surface panel-border rounded-[13px] overflow-hidden">
       <div class="px-5 py-4 panel-border-b">
         <span class="font-head font-bold text-[13px] text-primary">Conteúdo</span>
       </div>
       <div class="p-5">
         <div class="chip"><div class="chip-dot"></div>Tipo de QR Code</div>
+
+        <!-- Abas de tipo -->
         <div class="flex gap-[3px] bg-surface2 rounded-[9px] p-[3px] mb-[22px] flex-wrap" id="type-tabs">
           <button class="tab-btn active" data-type="url"     onclick="switchType('url')">🔗 URL</button>
           <button class="tab-btn"        data-type="text"    onclick="switchType('text')">💬 Texto</button>
@@ -448,7 +75,7 @@
           <button class="tab-btn"        data-type="wifi"    onclick="switchType('wifi')">📶 Wi-Fi</button>
         </div>
 
-        <!-- URL -->
+        <!-- Formulário: URL -->
         <div id="form-url">
           <div class="mb-4">
             <label class="block text-[10px] tracking-[1.2px] uppercase text-muted mb-[6px] font-medium">Endereço URL</label>
@@ -456,7 +83,7 @@
           </div>
         </div>
 
-        <!-- TEXT -->
+        <!-- Formulário: Texto -->
         <div id="form-text" class="hidden">
           <div class="mb-4">
             <label class="block text-[10px] tracking-[1.2px] uppercase text-muted mb-[6px] font-medium">Texto ou mensagem</label>
@@ -464,7 +91,7 @@
           </div>
         </div>
 
-        <!-- CONTACT -->
+        <!-- Formulário: Contato (vCard) -->
         <div id="form-contact" class="hidden">
           <div class="grid grid-cols-2 gap-3 mb-4">
             <div>
@@ -502,7 +129,7 @@
           </div>
         </div>
 
-        <!-- WIFI -->
+        <!-- Formulário: Wi-Fi -->
         <div id="form-wifi" class="hidden">
           <div class="mb-4">
             <label class="block text-[10px] tracking-[1.2px] uppercase text-muted mb-[6px] font-medium">Nome da Rede (SSID)</label>
@@ -533,7 +160,7 @@
       </div>
     </div>
 
-    <!-- DESIGN PANEL -->
+    <!-- PAINEL: Design -->
     <div class="bg-surface panel-border rounded-[13px] overflow-hidden">
       <div class="px-5 py-4 panel-border-b">
         <span class="font-head font-bold text-[13px] text-primary">Design do QR Code</span>
@@ -597,7 +224,7 @@
       </div>
     </div>
 
-    <!-- LOGO PANEL -->
+    <!-- PAINEL: Logomarca -->
     <div class="bg-surface panel-border rounded-[13px] overflow-hidden">
       <div class="px-5 py-4 panel-border-b">
         <span class="font-head font-bold text-[13px] text-primary">Logomarca central</span>
@@ -647,7 +274,7 @@
       </div>
     </div>
 
-    <!-- CAPTION PANEL -->
+    <!-- PAINEL: Legenda -->
     <div class="bg-surface panel-border rounded-[13px] overflow-hidden">
       <div class="px-5 py-4 panel-border-b">
         <span class="font-head font-bold text-[13px] text-primary">Texto abaixo do QR Code</span>
@@ -747,16 +374,19 @@
     <button class="btn-generate" onclick="generateQR()">▦ &nbsp;GERAR QR CODE</button>
   </div>
 
-  <!-- ── RIGHT COLUMN ── -->
+  <!-- ── COLUNA DIREITA ── -->
   <div class="lg:sticky lg:top-[74px] flex flex-col gap-3">
 
-    <!-- QR Preview -->
+    <!-- Preview do QR -->
     <div class="bg-surface panel-border rounded-[13px] p-6 flex flex-col items-center min-h-[160px]" id="qr-full-wrap">
       <div id="empty-state" class="flex flex-col items-center gap-3 py-10 text-muted">
         <div class="w-14 h-14 rounded-[13px] border-2 border-dashed border-theme grid place-items-center opacity-50">
           <span class="font-head font-extrabold text-[13px]">QR</span>
         </div>
-        <p class="text-[12px] text-center leading-relaxed">Preencha o conteúdo e clique em<br><strong class="text-primary">Gerar QR Code</strong></p>
+        <p class="text-[12px] text-center leading-relaxed">
+          Preencha o conteúdo e clique em<br>
+          <strong class="text-primary">Gerar QR Code</strong>
+        </p>
       </div>
 
       <div id="qr-result" class="hidden flex-col items-center w-full" style="display:none">
@@ -770,14 +400,14 @@
       </div>
     </div>
 
-    <!-- Download buttons -->
+    <!-- Botões de exportação -->
     <div class="grid grid-cols-3 gap-2" id="dl-buttons" style="display:none">
       <button class="btn-dl" onclick="downloadPNG()">⬇ PNG</button>
       <button class="btn-dl" onclick="downloadSVG()">⬇ SVG</button>
       <button class="btn-dl" onclick="printQR()">🖨 Imprimir</button>
     </div>
 
-    <!-- Tips panel -->
+    <!-- Painel de dicas -->
     <div class="bg-surface panel-border rounded-[13px] overflow-hidden">
       <div class="px-5 py-4 panel-border-b">
         <span class="font-head font-bold text-[13px] text-primary">Dicas</span>
@@ -806,284 +436,17 @@
 
 <div id="toast"></div>
 
-<script>
-/* ── THEME ── */
-function setTheme(t){
-  document.documentElement.setAttribute('data-theme',t);
-  localStorage.setItem('qrs-theme',t);
-  ['light','dark','system'].forEach(x=>document.getElementById('tbtn-'+x).classList.toggle('active',x===t));
-}
-(function(){ setTheme(localStorage.getItem('qrs-theme')||'system'); })();
+<!-- ═══════════════════════════════════════
+     Scripts — ordem de dependências importa
+═══════════════════════════════════════ -->
+<script src="js/state.js"></script>
+<script src="js/theme.js"></script>
+<script src="js/palettes.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/data-builder.js"></script>
+<script src="js/generator.js"></script>
+<script src="js/export.js"></script>
+<script src="js/main.js"></script>
 
-/* ── PALETTES ── */
-const PALETTES=[
-  {d:'#000000',l:'#ffffff',n:'Clássico'},
-  {d:'#1a1a2e',l:'#e8e0ff',n:'Noite'},
-  {d:'#5548e8',l:'#f0eeff',n:'Índigo'},
-  {d:'#0d7377',l:'#e6fafa',n:'Teal'},
-  {d:'#c0392b',l:'#fff5f5',n:'Vermelho'},
-  {d:'#b8860b',l:'#fffbee',n:'Ouro'},
-  {d:'#2d3436',l:'#f1f3f4',n:'Grafite'},
-  {d:'#6c3483',l:'#f5eef8',n:'Violeta'},
-];
-(function(){
-  const g=document.getElementById('palette-grid');
-  PALETTES.forEach((p,i)=>{
-    const el=document.createElement('div');
-    el.className='pal-sw'+(i===0?' sel':'');
-    el.title=p.n;
-    el.innerHTML=`<div class="ps-d" style="background:${p.d}"></div><div class="ps-l" style="background:${p.l}"></div>`;
-    el.onclick=()=>{ applyPalette(p.d,p.l); document.querySelectorAll('.pal-sw').forEach(s=>s.classList.remove('sel')); el.classList.add('sel'); };
-    g.appendChild(el);
-  });
-})();
-
-function applyPalette(d,l){
-  document.getElementById('color-dark').value=d; document.getElementById('color-dark-hex').value=d;
-  document.getElementById('color-light').value=l; document.getElementById('color-light-hex').value=l;
-}
-
-/* ── STATE ── */
-const S={type:'url',ec:'Q',logoOn:false,logoSrc:null,logoBorder:'square',capOn:false,capW:'400',capSt:'normal',capAl:'center'};
-
-/* ── TYPE ── */
-function switchType(t){
-  S.type=t;
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.dataset.type===t));
-  ['url','text','contact','wifi'].forEach(f=>document.getElementById('form-'+f).classList.toggle('hidden',f!==t));
-}
-
-/* ── RANGE ── */
-function rv(id,lid,unit){ document.getElementById(lid).textContent=document.getElementById(id).value+unit; }
-
-/* ── COLORS ── */
-function syncColor(w){ document.getElementById('color-'+w+'-hex').value=document.getElementById('color-'+w).value; }
-function syncColorHex(w){ const v=document.getElementById('color-'+w+'-hex').value; if(/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('color-'+w).value=v; }
-function syncCaptionColor(){ document.getElementById('caption-color-hex').value=document.getElementById('caption-color').value; renderCaption(); }
-function syncCaptionColorHex(){ const v=document.getElementById('caption-color-hex').value; if(/^#[0-9a-fA-F]{6}$/.test(v)) document.getElementById('caption-color').value=v; renderCaption(); }
-
-/* ── EC ── */
-function setEC(l){ S.ec=l; ['L','M','Q','H'].forEach(x=>document.getElementById('ec-'+x).classList.toggle('active',x===l)); }
-
-/* ── LOGO ── */
-function toggleLogo(){ S.logoOn=!S.logoOn; document.getElementById('logo-switch').classList.toggle('on',S.logoOn); document.getElementById('logo-controls').classList.toggle('hidden',!S.logoOn); }
-function loadLogoFile(e){ const f=e.target.files[0]; if(!f) return; const r=new FileReader(); r.onload=ev=>{ S.logoSrc=ev.target.result; const p=document.getElementById('upload-preview'); p.src=ev.target.result; p.classList.remove('hidden'); document.querySelector('#upload-zone .upload-text').textContent=f.name; }; r.readAsDataURL(f); }
-function setLogoBorder(t){ S.logoBorder=t; ['square','rounded','circle'].forEach(x=>document.getElementById('lb-'+x).classList.toggle('active',x===t)); }
-
-/* ── CAPTION ── */
-function toggleCaption(){ S.capOn=!S.capOn; document.getElementById('caption-switch').classList.toggle('on',S.capOn); document.getElementById('caption-controls').classList.toggle('hidden',!S.capOn); renderCaption(); }
-function setCaptionWeight(w){ S.capW=w; ['300','400','600','700'].forEach(x=>document.getElementById('fw-'+x).classList.toggle('active',x===w)); renderCaption(); }
-function setCaptionStyle(s){ S.capSt=s; ['normal','italic'].forEach(x=>document.getElementById('fs-'+x).classList.toggle('active',x===s)); renderCaption(); }
-function setCaptionAlign(a){ S.capAl=a; ['left','center','right'].forEach(x=>document.getElementById('fa-'+x).classList.toggle('active',x===a)); renderCaption(); }
-
-function renderCaption(){
-  const cap=document.getElementById('qr-caption'),prev=document.getElementById('caption-preview');
-  if(!S.capOn){cap.innerHTML='';return;}
-  const txt=document.getElementById('caption-text').value;
-  const sz=document.getElementById('caption-size').value;
-  const col=document.getElementById('caption-color').value;
-  const fnt=document.getElementById('caption-font').value;
-  const sp=document.getElementById('caption-spacing').value;
-  cap.style.cssText=`font-family:${fnt};font-size:${sz}px;color:${col};font-weight:${S.capW};font-style:${S.capSt};text-align:${S.capAl};letter-spacing:${sp}px;line-height:1.5;width:100%;margin-top:10px;`;
-  cap.textContent=txt;
-  prev.style.cssText=`font-family:${fnt};font-size:${sz}px;color:${col};font-weight:${S.capW};font-style:${S.capSt};letter-spacing:${sp}px;`;
-  prev.textContent=txt||'Texto de exemplo';
-}
-
-/* ── BUILD DATA ── */
-function buildData(){
-  switch(S.type){
-    case 'url':{ let u=document.getElementById('url-input').value.trim(); if(u&&!/^https?:\/\//i.test(u)) u='https://'+u; return u||null; }
-    case 'text': return document.getElementById('text-input').value.trim()||null;
-    case 'contact':{
-      const n=document.getElementById('c-name').value.trim(); if(!n) return null;
-      const l=document.getElementById('c-last').value.trim(),p=document.getElementById('c-phone').value.trim(),e=document.getElementById('c-email').value.trim(),o=document.getElementById('c-org').value.trim(),t=document.getElementById('c-title').value.trim(),u=document.getElementById('c-url').value.trim();
-      let v=`BEGIN:VCARD\nVERSION:3.0\nN:${l};${n};;;\nFN:${n}${l?' '+l:''}\n`;
-      if(p) v+=`TEL;TYPE=CELL:${p}\n`; if(e) v+=`EMAIL:${e}\n`; if(o) v+=`ORG:${o}\n`; if(t) v+=`TITLE:${t}\n`; if(u) v+=`URL:${u}\n`;
-      return v+'END:VCARD';
-    }
-    case 'wifi':{
-      const ssid=document.getElementById('w-ssid').value.trim(); if(!ssid) return null;
-      const pass=document.getElementById('w-pass').value,enc=document.getElementById('w-enc').value,hid=document.getElementById('w-hidden').value;
-      const e=s=>s.replace(/([\\";,:])/g,'\\$1');
-      return `WIFI:T:${enc};S:${e(ssid)};P:${e(pass)};H:${hid};;`;
-    }
-  }
-  return null;
-}
-
-/* ── GENERATE ── */
-function generateQR(){
-  const data=buildData(); if(!data){showToast('⚠ Preencha os campos obrigatórios');return;}
-  const size=parseInt(document.getElementById('qr-size').value);
-  const margin=parseInt(document.getElementById('qr-margin').value);
-  const dk=document.getElementById('color-dark').value,lt=document.getElementById('color-light').value;
-  const ecMap={L:QRCode.CorrectLevel.L,M:QRCode.CorrectLevel.M,Q:QRCode.CorrectLevel.Q,H:QRCode.CorrectLevel.H};
-  const out=document.getElementById('qr-output'); out.innerHTML='';
-  new QRCode(out,{text:data,width:size,height:size,colorDark:dk,colorLight:lt,correctLevel:ecMap[S.ec],quietZone:margin*10,quietZoneColor:lt});
-  const ov=document.getElementById('logo-overlay');
-  if(S.logoOn&&S.logoSrc){
-    const pct=parseInt(document.getElementById('logo-size').value)/100,pad=parseInt(document.getElementById('logo-pad').value),lsz=Math.round(size*pct);
-    const brM={square:'8px',rounded:'18px',circle:'50%'};
-    ov.classList.remove('hidden');
-    ov.style.cssText=`width:${lsz+pad*2}px;height:${lsz+pad*2}px;padding:${pad}px;border-radius:${brM[S.logoBorder]};`;
-    const li=document.getElementById('logo-img'); li.src=S.logoSrc; li.style.cssText=`width:${lsz}px;height:${lsz}px;`;
-  } else { ov.classList.add('hidden'); }
-  document.getElementById('empty-state').classList.add('hidden');
-  const res=document.getElementById('qr-result'); res.classList.remove('hidden'); res.style.display='flex';
-  document.getElementById('dl-buttons').style.display='grid';
-  renderCaption(); showToast('✓ QR Code gerado com sucesso!');
-}
-
-/* ── DOWNLOAD PNG ── */
-function downloadPNG(){
-  setTimeout(()=>{
-    const canvas=document.querySelector('#qr-output canvas'); if(!canvas){showToast('⚠ Gere o QR primeiro');return;}
-    const size=parseInt(document.getElementById('qr-size').value);
-    const capTxt=S.capOn?document.getElementById('caption-text').value:'';
-    const capSz=parseInt(document.getElementById('caption-size').value||16);
-    const extraH=capTxt?capSz*2+24:0;
-    const co=document.createElement('canvas'); co.width=size; co.height=size+extraH;
-    const ctx=co.getContext('2d');
-    ctx.fillStyle=document.getElementById('color-light').value; ctx.fillRect(0,0,co.width,co.height);
-    ctx.drawImage(canvas,0,0,size,size);
-    function fin(){ if(capTxt) drawCap(ctx,capTxt,size,size,capSz); triggerDL(co,'qrcode.png'); }
-    if(S.logoOn&&S.logoSrc){
-      const img=new Image();
-      img.onload=()=>{
-        const pct=parseInt(document.getElementById('logo-size').value)/100,pad=parseInt(document.getElementById('logo-pad').value),lsz=Math.round(size*pct);
-        const cx=(size-lsz-pad*2)/2,cy=(size-lsz-pad*2)/2,bw=lsz+pad*2;
-        const brM={square:0,rounded:14,circle:bw/2};
-        ctx.fillStyle='#ffffff'; rRect(ctx,cx,cy,bw,bw,brM[S.logoBorder]); ctx.fill();
-        ctx.drawImage(img,cx+pad,cy+pad,lsz,lsz); fin();
-      }; img.src=S.logoSrc;
-    } else fin();
-  },150);
-}
-
-function drawCap(ctx,text,cw,yS,fs){
-  const fnt=document.getElementById('caption-font').value.replace(/'/g,'');
-  const col=document.getElementById('caption-color').value;
-  const sp=parseFloat(document.getElementById('caption-spacing').value||0);
-  const al=S.capAl;
-  ctx.font=`${S.capSt} ${S.capW} ${fs}px ${fnt.split(',')[0].trim()}`;
-  ctx.fillStyle=col; ctx.textAlign=al==='left'?'left':al==='right'?'right':'center';
-  const x=al==='left'?16:al==='right'?cw-16:cw/2; const y=yS+fs+14;
-  if(sp){ let cx=al==='center'?x-ctx.measureText(text).width/2:x; for(const ch of text){ctx.fillText(ch,cx,y);cx+=ctx.measureText(ch).width+sp;} }
-  else ctx.fillText(text,x,y);
-}
-
-function rRect(ctx,x,y,w,h,r){
-  ctx.beginPath(); ctx.moveTo(x+r,y); ctx.lineTo(x+w-r,y); ctx.quadraticCurveTo(x+w,y,x+w,y+r);
-  ctx.lineTo(x+w,y+h-r); ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
-  ctx.lineTo(x+r,y+h); ctx.quadraticCurveTo(x,y+h,x,y+h-r);
-  ctx.lineTo(x,y+r); ctx.quadraticCurveTo(x,y,x+r,y); ctx.closePath();
-}
-
-function triggerDL(canvas,name){ const a=document.createElement('a'); a.download=name; a.href=canvas.toDataURL('image/png'); a.click(); showToast('⬇ Download iniciado!'); }
-
-/* ── DOWNLOAD SVG ── */
-function downloadSVG(){
-  setTimeout(()=>{
-    const canvas=document.querySelector('#qr-output canvas'); if(!canvas){showToast('⚠ Gere o QR primeiro');return;}
-    const size=parseInt(document.getElementById('qr-size').value);
-    const capTxt=S.capOn?document.getElementById('caption-text').value:'';
-    const capSz=parseInt(document.getElementById('caption-size').value||16);
-    const extraH=capTxt?capSz*2+24:0;
-
-    // Build the same composite canvas as PNG export
-    const co=document.createElement('canvas'); co.width=size; co.height=size+extraH;
-    const ctx=co.getContext('2d');
-    ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,co.width,co.height);
-    ctx.drawImage(canvas,0,0,size,size);
-
-    function finish(){
-      if(capTxt) drawCap(ctx,capTxt,size,size,capSz);
-      const dataUrl=co.toDataURL('image/png');
-      const totalH=size+extraH;
-      const svg=`<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="${size}" height="${totalH}"><image href="${dataUrl}" width="${size}" height="${totalH}"/></svg>`;
-      const a=document.createElement('a');
-      a.href=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'}));
-      a.download='qrcode.svg'; a.click();
-      showToast('⬇ SVG exportado!');
-    }
-
-    if(S.logoOn&&S.logoSrc){
-      const img=new Image();
-      img.onload=()=>{
-        const pct=parseInt(document.getElementById('logo-size').value)/100,pad=parseInt(document.getElementById('logo-pad').value),lsz=Math.round(size*pct);
-        const cx=(size-lsz-pad*2)/2,cy=(size-lsz-pad*2)/2,bw=lsz+pad*2;
-        const brM={square:0,rounded:14,circle:bw/2};
-        ctx.fillStyle='#ffffff'; rRect(ctx,cx,cy,bw,bw,brM[S.logoBorder]); ctx.fill();
-        ctx.drawImage(img,cx+pad,cy+pad,lsz,lsz); finish();
-      }; img.src=S.logoSrc;
-    } else { finish(); }
-  },150);
-}
-
-/* ── PRINT ── */
-function printQR(){
-  setTimeout(()=>{
-    const canvas=document.querySelector('#qr-output canvas'); if(!canvas){showToast('⚠ Gere o QR primeiro');return;}
-    const size=parseInt(document.getElementById('qr-size').value);
-    const capTxt=S.capOn?document.getElementById('caption-text').value:'';
-    const capSz=parseInt(document.getElementById('caption-size').value||16);
-    const extraH=capTxt?capSz*2+24:0;
-
-    const co=document.createElement('canvas'); co.width=size; co.height=size+extraH;
-    const ctx=co.getContext('2d');
-    ctx.fillStyle='#ffffff'; ctx.fillRect(0,0,co.width,co.height);
-    ctx.drawImage(canvas,0,0,size,size);
-
-    function doprint(){
-      if(capTxt) drawCap(ctx,capTxt,size,size,capSz);
-      const dataUrl=co.toDataURL('image/png');
-      const capFont=document.getElementById('caption-font').value;
-      const capColor=document.getElementById('caption-color').value;
-      const capSpacing=document.getElementById('caption-spacing').value;
-      const win=window.open('','_blank','width=600,height=700');
-      win.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8">
-        <title>QR Code — Impressão</title>
-        <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700&display=swap" rel="stylesheet">
-        <style>
-          *{margin:0;padding:0;box-sizing:border-box;}
-          html,body{width:100%;height:100%;background:#fff;}
-          body{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:40px;gap:14px;}
-          img{display:block;max-width:100%;height:auto;border-radius:8px;}
-          .cap{font-family:${capFont};color:${capColor};font-size:${capSz}px;font-weight:${S.capW};font-style:${S.capSt};text-align:${S.capAl};letter-spacing:${capSpacing}px;max-width:${size}px;word-break:break-word;line-height:1.5;}
-          @media print{
-            body{padding:0;justify-content:flex-start;padding-top:32px;}
-            @page{size:auto;margin:16mm;}
-          }
-        </style>
-      </head><body>
-        <img src="${dataUrl}" width="${size}" height="${size+extraH}" />
-        ${capTxt?`<div class="cap">${capTxt}</div>`:''}
-        <script>window.onload=function(){ setTimeout(()=>{ window.print(); },400); }<\/script>
-      </body></html>`);
-      win.document.close();
-      showToast('🖨 Enviando para impressora!');
-    }
-
-    if(S.logoOn&&S.logoSrc){
-      const img=new Image();
-      img.onload=()=>{
-        const pct=parseInt(document.getElementById('logo-size').value)/100,pad=parseInt(document.getElementById('logo-pad').value),lsz=Math.round(size*pct);
-        const cx=(size-lsz-pad*2)/2,cy=(size-lsz-pad*2)/2,bw=lsz+pad*2;
-        const brM={square:0,rounded:14,circle:bw/2};
-        ctx.fillStyle='#ffffff'; rRect(ctx,cx,cy,bw,bw,brM[S.logoBorder]); ctx.fill();
-        ctx.drawImage(img,cx+pad,cy+pad,lsz,lsz); doprint();
-      }; img.src=S.logoSrc;
-    } else { doprint(); }
-  },150);
-}
-
-/* ── TOAST ── */
-function showToast(msg){ const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2700); }
-
-/* ── INIT ── */
-document.getElementById('url-input').addEventListener('blur',function(){ const v=this.value.trim(); if(v&&!/^https?:\/\//i.test(v)) this.value='https://'+v; });
-rv('qr-size','qr-size-val','px'); rv('qr-margin','qr-margin-val',''); rv('logo-size','logo-size-val','%'); rv('logo-pad','logo-pad-val','px'); rv('caption-size','caption-size-val','px'); rv('caption-spacing','caption-spacing-val','px');
-</script>
 </body>
 </html>

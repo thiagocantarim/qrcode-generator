@@ -1,0 +1,297 @@
+/* ═══════════════════════════════════════════
+   components.css — estilos de componentes reutilizáveis
+   Usa as CSS vars de themes.css.
+   Tailwind cuida de espaçamento e layout.
+═══════════════════════════════════════════ */
+
+/* ── Reset & base ── */
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  transition: background-color 0.22s, color 0.22s;
+}
+
+/* ── Helpers de cor semântica (ponte entre Tailwind e CSS vars) ── */
+.bg-page     { background-color: var(--bg); }
+.bg-surface  { background-color: var(--surface); }
+.bg-surface2 { background-color: var(--surface2); }
+.bg-surface3 { background-color: var(--surface3); }
+.bg-accent   { background-color: var(--accent); }
+.bg-accent-s { background-color: var(--accent-bg); }
+
+.text-primary   { color: var(--text); }
+.text-secondary { color: var(--text2); }
+.text-muted     { color: var(--muted); }
+.text-accent    { color: var(--accent); }
+
+.border-theme   { border-color: var(--border); }
+.border-theme2  { border-color: var(--border2); }
+.border-accent  { border-color: var(--accent); }
+
+.header-bg       { background-color: var(--header-bg); }
+.panel-border    { border: 1px solid var(--border); }
+.panel-border-b  { border-bottom: 1px solid var(--border); }
+.panel-border-b2 { border-bottom: 1px solid var(--border2); }
+
+/* ── Inputs, Selects, Textareas ── */
+.input-base {
+  width: 100%;
+  background-color: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  padding: 10px 13px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.16s, box-shadow 0.16s, background-color 0.22s;
+  -webkit-appearance: none;
+}
+.input-base:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+  background-color: var(--surface);
+}
+select.input-base option { background-color: var(--surface2); color: var(--text); }
+textarea.input-base { resize: vertical; min-height: 88px; }
+
+/* ── Botões toggle (.tbtn) ── */
+.tbtn {
+  padding: 6px 12px;
+  border-radius: 7px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text2);
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.16s;
+  white-space: nowrap;
+}
+.tbtn:hover  { border-color: var(--accent); color: var(--text); background-color: var(--accent-bg); }
+.tbtn.active { background-color: var(--accent-bg); border-color: var(--accent); color: var(--accent); }
+
+/* ── Abas de tipo de conteúdo ── */
+.tab-btn {
+  flex: 1;
+  min-width: 68px;
+  padding: 7px 9px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: all 0.16s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active {
+  background-color: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 4px var(--shadow);
+}
+
+/* ── Botões do switcher de tema ── */
+.theme-btn {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px;
+  border-radius: 7px; border: none;
+  background: transparent; color: var(--muted);
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  cursor: pointer; transition: all 0.16s; white-space: nowrap;
+}
+.theme-btn:hover { color: var(--text); background-color: var(--surface3); }
+.theme-btn.active {
+  background-color: var(--surface);
+  color: var(--text);
+  box-shadow: 0 1px 5px var(--shadow);
+}
+
+/* ── Toggle switch ── */
+.sw {
+  width: 42px; height: 23px;
+  background-color: var(--surface3);
+  border-radius: 100px;
+  border: 1px solid var(--border);
+  position: relative; cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+.sw.on { background-color: var(--accent); border-color: var(--accent); }
+.sw::after {
+  content: ''; position: absolute;
+  width: 17px; height: 17px;
+  background: #fff; border-radius: 50%;
+  top: 2px; left: 2px;
+  transition: transform 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+}
+.sw.on::after { transform: translateX(19px); }
+
+/* ── Range inputs ── */
+input[type="range"] {
+  flex: 1; padding: 0; height: 4px;
+  background-color: var(--surface3);
+  border-radius: 100px; border: none;
+  -webkit-appearance: none; cursor: pointer;
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px; height: 16px;
+  border-radius: 50%; background-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring); cursor: pointer;
+}
+
+/* ── Swatch de cor ── */
+.color-swatch {
+  width: 40px; height: 40px;
+  border-radius: 9px; border: 1px solid var(--border);
+  overflow: hidden; cursor: pointer; flex-shrink: 0;
+}
+.color-swatch input[type="color"] {
+  width: 200%; height: 200%;
+  border: none; padding: 0; margin: -25%;
+  cursor: pointer; border-radius: 0;
+}
+
+/* ── Zona de upload ── */
+.upload-zone {
+  border: 2px dashed var(--border);
+  border-radius: 10px; padding: 18px;
+  text-align: center; cursor: pointer;
+  transition: all 0.16s; position: relative;
+}
+.upload-zone:hover { border-color: var(--accent); background-color: var(--accent-bg); }
+.upload-zone input {
+  position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  width: 100%; height: 100%; border: none; background: transparent; padding: 0;
+}
+
+/* ── Swatch de paleta ── */
+.pal-sw {
+  width: 30px; height: 30px; border-radius: 7px;
+  border: 2px solid transparent; cursor: pointer;
+  transition: transform 0.14s, border-color 0.14s;
+  display: flex; overflow: hidden; flex-shrink: 0;
+}
+.pal-sw:hover { transform: scale(1.12); }
+.pal-sw.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-ring); }
+.pal-sw .ps-d, .pal-sw .ps-l { flex: 1; height: 100%; }
+
+/* ── Chip de tipo ── */
+.chip {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px 3px 5px;
+  background-color: var(--accent-bg);
+  border: 1px solid rgba(124,109,250,0.18);
+  border-radius: 100px; font-size: 10px; color: var(--accent);
+  margin-bottom: 13px; letter-spacing: 0.4px;
+}
+.chip-dot {
+  width: 5px; height: 5px; background-color: var(--accent);
+  border-radius: 50%; animation: blink 1.8s infinite;
+}
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+/* ── Barra de pré-visualização de fonte ── */
+.font-preview-bar {
+  background-color: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 9px; padding: 12px 14px; margin-top: 7px;
+  font-size: 17px; text-align: center;
+  min-height: 46px; display: flex; align-items: center;
+  justify-content: center; transition: all 0.3s;
+}
+
+/* ── Divisor de seção ── */
+.sec-div {
+  display: flex; align-items: center; gap: 10px;
+  margin: 18px 0 14px;
+}
+.sec-div::before, .sec-div::after {
+  content: ''; flex: 1; height: 1px; background-color: var(--border);
+}
+.sec-div span {
+  font-size: 9px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted); white-space: nowrap;
+}
+
+/* ── Overlay da logo no preview do QR ── */
+.qr-logo-overlay {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: hidden; background: #fff;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 3px 14px rgba(0,0,0,0.28); pointer-events: none;
+}
+.qr-logo-overlay img { width: 100%; height: 100%; object-fit: contain; }
+
+/* ── Botão gerar QR ── */
+.btn-generate {
+  width: 100%; padding: 13px;
+  background-color: var(--accent); border: none;
+  border-radius: 11px; color: #fff;
+  font-family: 'Syne', sans-serif; font-weight: 700;
+  font-size: 14px; letter-spacing: 0.7px;
+  cursor: pointer; transition: all 0.16s; margin-top: 8px;
+}
+.btn-generate:hover {
+  filter: brightness(1.1); transform: translateY(-1px);
+  box-shadow: 0 8px 20px var(--accent-ring);
+}
+.btn-generate:active { transform: translateY(0); filter: brightness(0.95); }
+
+/* ── Botões de download ── */
+.btn-dl {
+  padding: 10px; border-radius: 9px;
+  border: 1px solid var(--border);
+  background-color: var(--surface2); color: var(--text2);
+  font-family: 'DM Mono', monospace; font-size: 12px;
+  cursor: pointer; transition: all 0.16s;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+}
+.btn-dl:hover {
+  border-color: var(--accent); color: var(--accent);
+  background-color: var(--accent-bg);
+}
+
+/* ── Toast de notificação ── */
+#toast {
+  position: fixed; bottom: 22px; left: 50%;
+  transform: translateX(-50%) translateY(72px);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text); padding: 9px 22px;
+  border-radius: 100px; font-size: 12px; z-index: 9999;
+  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 8px 28px var(--shadow); white-space: nowrap;
+}
+#toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ── Tag de código inline ── */
+code {
+  font-family: 'DM Mono', monospace; font-size: 11px;
+  background-color: var(--surface2); padding: 1px 5px;
+  border-radius: 4px; color: var(--accent);
+  border: 1px solid var(--border);
+}
+
+/* ── Scrollbar customizada ── */
+::-webkit-scrollbar { width: 5px; }
+::-webkit-scrollbar-track { background-color: var(--bg); }
+::-webkit-scrollbar-thumb { background-color: var(--surface3); border-radius: 100px; }
+
+/* ── Utilitário ── */
+.hidden { display: none !important; }
+
+/* ── Responsivo ── */
+@media (max-width: 640px) {
+  .theme-btn span { display: none; }
+}

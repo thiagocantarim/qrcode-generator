@@ -1,0 +1,79 @@
+/* ═══════════════════════════════════════════
+   themes.css — CSS custom properties por tema
+   Tailwind cuida do layout; estas vars cuidam das cores.
+═══════════════════════════════════════════ */
+
+[data-theme="dark"] {
+  --bg:          #111114;
+  --surface:     #1a1a1f;
+  --surface2:    #222228;
+  --surface3:    #2c2c34;
+  --border:      rgba(255,255,255,0.08);
+  --border2:     rgba(255,255,255,0.04);
+  --accent:      #7c6dfa;
+  --accent-bg:   rgba(124,109,250,0.12);
+  --accent-ring: rgba(124,109,250,0.22);
+  --text:        #ededf2;
+  --text2:       #9898b0;
+  --muted:       #55556a;
+  --shadow:      rgba(0,0,0,0.55);
+  --header-bg:   rgba(17,17,20,0.9);
+  color-scheme: dark;
+}
+
+[data-theme="light"] {
+  --bg:          #f3f3f6;
+  --surface:     #ffffff;
+  --surface2:    #ededf2;
+  --surface3:    #e4e4ea;
+  --border:      rgba(0,0,0,0.09);
+  --border2:     rgba(0,0,0,0.05);
+  --accent:      #5548e8;
+  --accent-bg:   rgba(85,72,232,0.08);
+  --accent-ring: rgba(85,72,232,0.18);
+  --text:        #18181c;
+  --text2:       #50506a;
+  --muted:       #9898b0;
+  --shadow:      rgba(0,0,0,0.10);
+  --header-bg:   rgba(243,243,246,0.9);
+  color-scheme: light;
+}
+
+/* Sistema: padrão claro, sobrescreve com escuro via media query */
+[data-theme="system"] {
+  --bg:          #f3f3f6;
+  --surface:     #ffffff;
+  --surface2:    #ededf2;
+  --surface3:    #e4e4ea;
+  --border:      rgba(0,0,0,0.09);
+  --border2:     rgba(0,0,0,0.05);
+  --accent:      #5548e8;
+  --accent-bg:   rgba(85,72,232,0.08);
+  --accent-ring: rgba(85,72,232,0.18);
+  --text:        #18181c;
+  --text2:       #50506a;
+  --muted:       #9898b0;
+  --shadow:      rgba(0,0,0,0.10);
+  --header-bg:   rgba(243,243,246,0.9);
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  [data-theme="system"] {
+    --bg:          #111114;
+    --surface:     #1a1a1f;
+    --surface2:    #222228;
+    --surface3:    #2c2c34;
+    --border:      rgba(255,255,255,0.08);
+    --border2:     rgba(255,255,255,0.04);
+    --accent:      #7c6dfa;
+    --accent-bg:   rgba(124,109,250,0.12);
+    --accent-ring: rgba(124,109,250,0.22);
+    --text:        #ededf2;
+    --text2:       #9898b0;
+    --muted:       #55556a;
+    --shadow:      rgba(0,0,0,0.55);
+    --header-bg:   rgba(17,17,20,0.9);
+    color-scheme: dark;
+  }
+}
